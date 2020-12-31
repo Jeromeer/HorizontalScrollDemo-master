@@ -6,6 +6,7 @@ import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.view.MotionEvent;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -97,6 +98,7 @@ public class MainActivity extends AppCompatActivity implements ContentAdapter.On
             @Override
             public void onCustomScrollChange(CustomHorizontalScrollView listener, int scrollX, int scrollY, int oldScrollX, int oldScrollY) {
                 //代码重复,可以抽取/////
+                contentAdapter.offestX = scrollX;
                 List<ContentAdapter.ItemViewHolder> viewHolderCacheList = contentAdapter.getViewHolderCacheList();
                 if (null != viewHolderCacheList) {
                     int size = viewHolderCacheList.size();
@@ -137,8 +139,8 @@ public class MainActivity extends AppCompatActivity implements ContentAdapter.On
     }
 
     @Override
-    public void onScroll(int offestX) {
+    public void onScroll(MotionEvent event) {
         //处理单个item滚动时,顶部tab需要联动
-        if (null != horScrollview) horScrollview.scrollTo(offestX, 0);
+        if (null != horScrollview) horScrollview.onTouchEvent(event);
     }
 }
