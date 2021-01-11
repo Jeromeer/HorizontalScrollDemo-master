@@ -5,7 +5,6 @@ import android.support.annotation.NonNull;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
-import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.ViewTreeObserver;
@@ -28,11 +27,11 @@ public class ContentAdapter extends RecyclerView.Adapter<ContentAdapter.ItemView
     private Context context;
     private List<Entity> datas;
     private List<ItemViewHolder> mViewHolderList = new ArrayList<>();
-    public int offestX = 0;
+    private int offestX = 0;
     private OnContentScrollListener onContentScrollListener;
 
     public interface OnContentScrollListener {
-        void onScroll(MotionEvent event);
+        void onScroll(int offestX);
     }
 
     public void setOnContentScrollListener(OnContentScrollListener onContentScrollListener) {
@@ -72,26 +71,19 @@ public class ContentAdapter extends RecyclerView.Adapter<ContentAdapter.ItemView
         if (!mViewHolderList.contains(itemViewHolder)) {
             mViewHolderList.add(itemViewHolder);
         }
-        //滑动回调地狱
-//        //滑动单个ytem的rv时,右侧整个区域的联动
-//        itemViewHolder.horItemScrollview.setOnCustomScrollChangeListener(new CustomHorizontalScrollView.OnCustomScrollChangeListener() {
-//            @Override
-//            public void onCustomScrollChange(CustomHorizontalScrollView listener, int scrollX, int scrollY, int oldScrollX, int oldScrollY) {
-//                for (int i = 0; i < mViewHolderList.size(); i++) {
-//                    ItemViewHolder touchViewHolder = mViewHolderList.get(i);
-//                    if (touchViewHolder != itemViewHolder) {
-//                        touchViewHolder.horItemScrollview.scrollTo(scrollX, 0);
-//                    }
-//                }
-//                //记录滑动距离,便于处理下拉刷新之后的还原操作
-//                if (null != onContentScrollListener) onContentScrollListener.onScroll(scrollX);
-//                offestX = scrollX;
-//            }
-//        });
-        itemViewHolder.horItemScrollview.setEventListener(new CustomHorizontalScrollView.EventListener() {
+        //滑动单个ytem的rv时,右侧整个区域的联动
+        itemViewHolder.horItemScrollview.setOnCustomScrollChangeListener(new CustomHorizontalScrollView.OnCustomScrollChangeListener() {
             @Override
-            public void onEvent(MotionEvent event) {
-                if (null != onContentScrollListener) onContentScrollListener.onScroll(event);
+            public void onCustomScrollChange(CustomHorizontalScrollView listener, int scrollX, int scrollY, int oldScrollX, int oldScrollY) {
+                for (int i = 0; i < mViewHolderList.size(); i++) {
+                    ItemViewHolder touchViewHolder = mViewHolderList.get(i);
+                    if (touchViewHolder != itemViewHolder) {
+                        touchViewHolder.horItemScrollview.scrollTo(scrollX, 0);
+                    }
+                }
+                //记录滑动距离,便于处理下拉刷新之后的还原操作
+                if (null != onContentScrollListener) onContentScrollListener.onScroll(scrollX);
+                offestX = scrollX;
             }
         });
         //由于viewHolder的缓存,在1级缓存取出来是2个viewholder,并且不会被重新赋值,所以这里需要处理缓存的viewholder的位移
