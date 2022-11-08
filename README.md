@@ -1,4 +1,4 @@
-#  [V2版本已上传至码云,有需要请移步](https://gitee.com/Jeromeer/horizontal-scroll-demo)
+#  [V2优化版本已上传至gitee,使用起来更香,有需要请移步](https://gitee.com/Jeromeer/horizontal-scroll-demo)
 ### RecyclerView+HorizontalScrollView 无嵌套实现左侧标题栏固定,右侧内容部分可整体横向滑动,可随意上下拉刷新,刷新和滚动之后,位移位置不变
 
 
